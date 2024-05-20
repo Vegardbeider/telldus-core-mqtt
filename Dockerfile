@@ -53,7 +53,8 @@ COPY src ./src
 
 COPY supervisord.conf /etc/supervisord.conf
 
-COPY ../run.sh /run.sh
+COPY run.sh /
+RUN chmod a+x /run.sh
 
 CMD [ "/run.sh" ]
 
