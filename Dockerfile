@@ -53,5 +53,7 @@ COPY src ./src
 
 COPY supervisord.conf /etc/supervisord.conf
 
+COPY ../run.sh /run.sh
+
 CMD [ "/run.sh" ]
 
