@@ -1,4 +1,4 @@
-FROM python:3-alpine3.14
+FROM ghcr.io/home-assistant/amd64-base:3.15
 
 # Compile telldus-core source
 
@@ -10,7 +10,9 @@ RUN apk add --no-cache \
       confuse \
       libftdi1 \
       libstdc++ \
-      supervisor
+      supervisor \
+      python3 \
+      py3-pip
 
 RUN apk add --no-cache --virtual .build-dependencies \
       confuse-dev \
@@ -35,8 +37,8 @@ WORKDIR /usr/src/telldus-core-mqtt
 
 COPY requirements.txt ./
 
-RUN python -m pip install --upgrade pip \
-    && pip3 install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 RUN ln -s /usr/local/bin/tellcore_events /usr/bin/tdevents \
@@ -51,4 +53,5 @@ COPY src ./src
 
 COPY supervisord.conf /etc/supervisord.conf
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD [ "/run.sh" ]
+
