@@ -1,0 +1,3 @@
+[submodule "telldus/telldus"]
+	path = telldus/telldus
+	url = https://github.com/Vegardbeider/telldus.git
