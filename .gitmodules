@@ -1,3 +1,3 @@
 [submodule "telldus"]
 	path = telldus
-	url = git@github.com:mliljedahl/telldus.git
+	url = https://github.com:mliljedahl/telldus.git
