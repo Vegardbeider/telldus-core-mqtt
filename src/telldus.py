@@ -78,6 +78,15 @@ class Telldus:
                 config_data = self._create_config_data(
                     d['device'], topics['state']['topic'], d,
                     topics['command']['topic'], topics['brightness'])
+                
+                # Create button entities for Switches
+                topics['button'] = {}
+                topics['button']['topic_on'] = ('{}/button/{}_telldus_on/{}/config'.format(config_topic, d['device'].id, d['type']))
+                topics['button']['topic_off'] = ('{}/button/{}_telldus_off/{}/config'.format(config_topic, d['device'].id, d['type']))
+                button_data_on, button_data_off = self._create_button_data(d['device'], config_data)
+                topics['button']['data_on'] = json.dumps(button_data_on, ensure_ascii=False)
+                topics['button']['data_off'] = json.dumps(button_data_off, ensure_ascii=False)
+                    
             elif 'command' in d:
                 topics['config']['topic'] = ('{}/{}/{}_telldus/{}/config'
                                              .format(
@@ -157,6 +166,24 @@ class Telldus:
                 config_data['payload_off'] = const.TELLSTICK_TURNOFF
 
         return config_data
+    
+    def _create_button_data(self, device, config_data):
+        button_data_on = {}
+        button_data_off = {}
+
+        button_data_on['device'] = config_data['device']
+        button_data_off['device'] = config_data['device']
+
+        button_data_on['unique_id'] = ('{}_telldus_button_on'.format(device.id))
+        button_data_off['unique_id'] = ('{}_telldus_button_off'.format(device.id))
+        button_data_on['name'] = device.name + '-on'
+        button_data_off['name'] = device.name + '-off'
+        button_data_on['command_topic'] = config_data['command_topic']
+        button_data_off['command_topic'] = config_data['command_topic']
+        button_data_on['payload_press'] = const.TELLSTICK_TURNON
+        button_data_off['payload_press'] = const.TELLSTICK_TURNOFF
+
+        return button_data_on, button_data_off
 
     def create_topic(self, type_id, model):
         if model == 'light':
