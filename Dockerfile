@@ -1,4 +1,5 @@
-FROM python:3-alpine3.15
+FROM python:3-alpine3.20
+
 
 # Compile telldus-core source
 
@@ -9,8 +10,7 @@ COPY telldus /usr/src/telldus
 RUN apk add --no-cache \
       confuse \
       libftdi1 \
-      libstdc++ \
-      supervisor
+      libstdc++
 
 RUN apk add --no-cache --virtual .build-dependencies \
       confuse-dev \
@@ -51,4 +51,4 @@ COPY src ./src
 
 COPY supervisord.conf /etc/supervisord.conf
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
