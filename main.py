@@ -211,6 +211,11 @@ def initial_publish(client_mqtt, topics):
         if 'state' in topic:
             publish_mqtt(client_mqtt, topic['state']['topic'],
                          topic['state']['data'])
+        if 'button' in topic:
+            publish_mqtt(client_mqtt, topic['button']['topic_on'],
+                         topic['button']['data_on'])
+            publish_mqtt(client_mqtt, topic['button']['topic_off'],
+                         topic['button']['data_off'])
 
 
 with open('./logging.yaml', 'r', encoding='utf-8') as stream:
