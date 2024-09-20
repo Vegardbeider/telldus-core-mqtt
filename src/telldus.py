@@ -141,6 +141,7 @@ class Telldus:
         if 'unit' in extra:
             config_data['device_class'] = extra['type']
             config_data['unit_of_measurement'] = extra['unit']
+            config_data['state_class'] = 'measurement'
 
         # if command exists assume binary_sensor
         if 'command' in extra:
