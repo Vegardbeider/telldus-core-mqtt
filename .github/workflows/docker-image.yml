@@ -24,7 +24,9 @@ jobs:
           password: ${{ secrets.CONTAINER_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ghcr.io/vegardbeider/telldus-core-mqtt:$(date +%s)
+        run: docker build . --file Dockerfile --tag ghcr.io/vegardbeider/telldus-core-mqtt:$(date +%s) \
+             && docker build . --file Dockerfile --tag ghcr.io/vegardbeider/telldus-core-mqtt:latest
 
       - name: Push Docker image
-        run: docker push ghcr.io/vegardbeider/telldus-core-mqtt:$(date +%s)
+        run: docker push ghcr.io/vegardbeider/telldus-core-mqtt:$(date +%s) \
+             && docker push ghcr.io/vegardbeider/telldus-core-mqtt:latest
