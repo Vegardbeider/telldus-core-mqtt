@@ -35,6 +35,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/$vegardbeider/telldus-core-mqtt:latest
-            ghcr.io/$vegardbeider/telldus-core-mqtt:$(date +%F)
+            ghcr.io/vegardbeider/telldus-core-mqtt:latest
+            ghcr.io/vegardbeider/telldus-core-mqtt:$(date +%F)
           platforms: linux/amd64,linux/arm64
