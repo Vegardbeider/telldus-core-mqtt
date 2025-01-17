@@ -211,14 +211,18 @@ def initial_publish(client_mqtt, topics):
         if 'config' in topic:
             publish_mqtt(client_mqtt, topic['config']['topic'],
                          topic['config']['data'])
+            logging.info('=======This is publish_mqtt call number 6')
         if 'state' in topic:
             publish_mqtt(client_mqtt, topic['state']['topic'],
                          topic['state']['data'])
+            logging.info('=======This is publish_mqtt call number 7')
         if 'button' in topic:
             publish_mqtt(client_mqtt, topic['button']['topic_on'],
                          topic['button']['data_on'])
+            logging.info('=======This is publish_mqtt call number 8')
             publish_mqtt(client_mqtt, topic['button']['topic_off'],
                          topic['button']['data_off'])
+            logging.info('=======This is publish_mqtt call number 9')
 
 
 with open('./logging.yaml', 'r', encoding='utf-8') as stream:
