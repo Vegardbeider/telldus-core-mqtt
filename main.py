@@ -60,9 +60,9 @@ def connect_mqtt(config, client_id) -> mqtt_client:
     return client
 
 
-def publish_mqtt(client, topic, msg):
+def publish_mqtt(client, topic, msg, retain=True):
     with THREADING_RLOCK:
-        result = client.publish(topic, msg, retain=True)
+        result = client.publish(topic, msg, retain=retain)
 
         if result[0] == 0:
             logging.info('Send "%s" to topic "%s"', msg, topic)
@@ -102,7 +102,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNON):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNON)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
 
                 logging.debug('[DEVICE] Sending command ON to device '
                               'id %s', device_id)
@@ -111,7 +111,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNOFF):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNOFF)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
 
                 logging.debug('[DEVICE] Sending command OFF to device '
                               'id %s', device_id)
@@ -183,7 +183,7 @@ def device_event(id_, method, data, cid):
         logging.debug('[DEVICE EVENT SWITCH] %s', string)
         topic = d.create_topic(id_, 'switch')
         topic_data = d.create_topic_data('switch', method)
-    publish_mqtt(mqtt_device, topic, topic_data)
+    publish_mqtt(mqtt_device, topic, topic_data, False)
 
 
 def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
@@ -193,29 +193,39 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
         id_, model, type_string, value)
     logging.debug(string)
 
+    # Skip publish if the value is above 50
+    # Sensor is not capable of reading values above 50 degrees
+    # must be an error
+    if data_type is const.TELLSTICK_TEMPERATURE:
+        if float(value) > 50:
+            logging.warning('Temperature is above 50 ({0}) degrees, must be an error, skipping data.'.format(value))
+            return
+        
     # Sensors can be added or discovered in telldus-core without
     # a restart, ensure config topic for HASS
     sensor_topics = s.create_topics(s.get(id_))
     initial_publish(mqtt_sensor, sensor_topics)
+
 
     topic = s.create_topic(id_, type_string)
     data = s.create_topic_data(type_string, value)
     publish_mqtt(mqtt_sensor, topic, data)
 
 
-def initial_publish(client_mqtt, topics):
+def initial_publish(client_mqtt, topics, retain=True):
     for topic in topics:
         if 'config' in topic:
             publish_mqtt(client_mqtt, topic['config']['topic'],
                          topic['config']['data'])
         if 'state' in topic:
             publish_mqtt(client_mqtt, topic['state']['topic'],
-                         topic['state']['data'])
+                         topic['state']['data'], retain)
+            logging.info('=======This is publish_mqtt call number 7')
         if 'button' in topic:
             publish_mqtt(client_mqtt, topic['button']['topic_on'],
-                         topic['button']['data_on'])
+                         topic['button']['data_on'], False)
             publish_mqtt(client_mqtt, topic['button']['topic_off'],
-                         topic['button']['data_off'])
+                         topic['button']['data_off'], False)
 
 
 with open('./logging.yaml', 'r', encoding='utf-8') as stream:
@@ -258,7 +268,7 @@ initial_publish(mqtt_sensor, sensors_topics)
 # # On program start, collect devices to publish to MQTT server
 d = telldus.Device(c.td_core)
 devices_topics = d.create_topics(d.get())
-initial_publish(mqtt_device, devices_topics)
+initial_publish(mqtt_device, devices_topics, False)
 
 # Collect raw commands
 raw = telldus.Command(c.td_core)

@@ -142,6 +142,7 @@ class Telldus:
             config_data['device_class'] = extra['type']
             config_data['unit_of_measurement'] = extra['unit']
             config_data['state_class'] = 'measurement'
+            config_data['force_update'] = True
 
         # if command exists assume binary_sensor
         if 'command' in extra:
@@ -329,7 +330,8 @@ class Device(Telldus):
 
             device_data['type'] = device_model
             device_data['device'] = device
-            device_data['state_data'] = state_data
+            # Change the behavior to avoid switching the device off at startup
+            device_data['state_data'] = None # state_data
 
             devices_data.append(dict(device_data))
 
