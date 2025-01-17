@@ -102,7 +102,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNON):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNON)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
                 logging.info('=======This is publish_mqtt call number 1')
 
                 logging.debug('[DEVICE] Sending command ON to device '
@@ -112,7 +112,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNOFF):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNOFF)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
                 logging.info('=======This is publish_mqtt call number 2')
 
                 logging.debug('[DEVICE] Sending command OFF to device '
@@ -168,7 +168,6 @@ def raw_event(data, controller_id, cid):
                                        raw.serialized['method'])
 
     publish_mqtt(mqtt_command, topic, topic_data)
-    logging.info('=======This is publish_mqtt call number 3')
 
 
 def device_event(id_, method, data, cid):
@@ -186,7 +185,7 @@ def device_event(id_, method, data, cid):
         logging.debug('[DEVICE EVENT SWITCH] %s', string)
         topic = d.create_topic(id_, 'switch')
         topic_data = d.create_topic_data('switch', method)
-    publish_mqtt(mqtt_device, topic, topic_data)
+    publish_mqtt(mqtt_device, topic, topic_data, False)
     logging.info('=======This is publish_mqtt call number 4')
 
 
@@ -205,7 +204,6 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
     topic = s.create_topic(id_, type_string)
     data = s.create_topic_data(type_string, value)
     publish_mqtt(mqtt_sensor, topic, data)
-    logging.info('=======This is publish_mqtt call number 5')
 
 
 def initial_publish(client_mqtt, topics):
