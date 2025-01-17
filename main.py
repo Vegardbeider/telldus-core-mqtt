@@ -198,7 +198,7 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
     # must be an error
     if data_type is const.TELLSTICK_TEMPERATURE:
         if float(value) > 50:
-            logging.warning('Temperature is above 50 degrees, must be an error, skipping data.')
+            logging.warning('Temperature is above 50 ({0}) degrees, must be an error, skipping data.'.format(value))
             return
         
     # Sensors can be added or discovered in telldus-core without
