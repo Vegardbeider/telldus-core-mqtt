@@ -157,6 +157,7 @@ class Telldus:
         # if command_topic exists assume device
         if command_topic is not None:
             config_data['command_topic'] = command_topic
+            config_data['force_update'] = True
             if extra['type'] != 'light':
                 config_data['state_on'] = const.TELLSTICK_TURNON
                 config_data['state_off'] = const.TELLSTICK_TURNOFF
