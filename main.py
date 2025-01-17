@@ -203,26 +203,24 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
 
     topic = s.create_topic(id_, type_string)
     data = s.create_topic_data(type_string, value)
+    logging.info('=====Value of sensor: ', value)
     publish_mqtt(mqtt_sensor, topic, data)
 
 
-def initial_publish(client_mqtt, topics):
+def initial_publish(client_mqtt, topics, retain=True):
     for topic in topics:
         if 'config' in topic:
             publish_mqtt(client_mqtt, topic['config']['topic'],
                          topic['config']['data'])
-            logging.info('=======This is publish_mqtt call number 6')
         if 'state' in topic:
             publish_mqtt(client_mqtt, topic['state']['topic'],
-                         topic['state']['data'])
+                         topic['state']['data'], retain)
             logging.info('=======This is publish_mqtt call number 7')
         if 'button' in topic:
             publish_mqtt(client_mqtt, topic['button']['topic_on'],
-                         topic['button']['data_on'])
-            logging.info('=======This is publish_mqtt call number 8')
+                         topic['button']['data_on'], False)
             publish_mqtt(client_mqtt, topic['button']['topic_off'],
-                         topic['button']['data_off'])
-            logging.info('=======This is publish_mqtt call number 9')
+                         topic['button']['data_off'], False)
 
 
 with open('./logging.yaml', 'r', encoding='utf-8') as stream:
@@ -265,7 +263,7 @@ initial_publish(mqtt_sensor, sensors_topics)
 # # On program start, collect devices to publish to MQTT server
 d = telldus.Device(c.td_core)
 devices_topics = d.create_topics(d.get())
-initial_publish(mqtt_device, devices_topics)
+initial_publish(mqtt_device, devices_topics, False)
 
 # Collect raw commands
 raw = telldus.Command(c.td_core)
