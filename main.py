@@ -60,9 +60,9 @@ def connect_mqtt(config, client_id) -> mqtt_client:
     return client
 
 
-def publish_mqtt(client, topic, msg):
+def publish_mqtt(client, topic, msg, retain=True):
     with THREADING_RLOCK:
-        result = client.publish(topic, msg, retain=True)
+        result = client.publish(topic, msg, retain=retain)
 
         if result[0] == 0:
             logging.info('Send "%s" to topic "%s"', msg, topic)
@@ -102,7 +102,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNON):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNON)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
 
                 logging.debug('[DEVICE] Sending command ON to device '
                               'id %s', device_id)
@@ -111,7 +111,7 @@ def subscribe_device(client: mqtt_client):
             if int(msg.payload.decode()) == int(const.TELLSTICK_TURNOFF):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNOFF)
-                publish_mqtt(mqtt_device, topic, topic_data)
+                publish_mqtt(mqtt_device, topic, topic_data, False)
 
                 logging.debug('[DEVICE] Sending command OFF to device '
                               'id %s', device_id)
@@ -183,7 +183,7 @@ def device_event(id_, method, data, cid):
         logging.debug('[DEVICE EVENT SWITCH] %s', string)
         topic = d.create_topic(id_, 'switch')
         topic_data = d.create_topic_data('switch', method)
-    publish_mqtt(mqtt_device, topic, topic_data)
+    publish_mqtt(mqtt_device, topic, topic_data, False)
 
 
 def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
