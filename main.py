@@ -205,7 +205,8 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
         logging.info('=====This is a temp sensor and the temp is: {0}'.format(value))
         logging.info('Type of value is: {0}'.format(type(float(value))))
         if float(value) > 10:
-            logging.info('Temperature is above 10 degrees, must be an error, skipping data.')
+            logging.info('Temperature is above 50 degrees, must be an error, skipping data.')
+            return
 
 
     topic = s.create_topic(id_, type_string)
