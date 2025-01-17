@@ -203,7 +203,7 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
 
     topic = s.create_topic(id_, type_string)
     data = s.create_topic_data(type_string, value)
-    logging.info('=====Value of sensor: ', str(value))
+    logging.info('=====Value of sensor: {0}, data type: {1}'.format(value, data_type))
     publish_mqtt(mqtt_sensor, topic, data)
 
 
