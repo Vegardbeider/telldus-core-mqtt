@@ -196,17 +196,20 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
         id_, model, type_string, value)
     logging.debug(string)
 
-    # Sensors can be added or discovered in telldus-core without
-    # a restart, ensure config topic for HASS
-    sensor_topics = s.create_topics(s.get(id_))
-    initial_publish(mqtt_sensor, sensor_topics)
-
+    # Skip publish if the value is above 50
+    # Sensor is not capable of reading values above 50 degrees
+    # must be an error
     if data_type is const.TELLSTICK_TEMPERATURE:
         logging.info('=====This is a temp sensor and the temp is: {0}'.format(value))
         logging.info('Type of value is: {0}'.format(type(float(value))))
         if float(value) > 10:
             logging.info('Temperature is above 50 degrees, must be an error, skipping data.')
             return
+        
+    # Sensors can be added or discovered in telldus-core without
+    # a restart, ensure config topic for HASS
+    sensor_topics = s.create_topics(s.get(id_))
+    initial_publish(mqtt_sensor, sensor_topics)
 
 
     topic = s.create_topic(id_, type_string)
