@@ -323,10 +323,12 @@ class Device(Telldus):
 
             state_data = {}
 
-            state_data[device_model] = device.last_sent_command(
-                const.TELLSTICK_TURNON
-                | const.TELLSTICK_TURNOFF
-                | const.TELLSTICK_DIM)
+            # Change the behavior to avoid switching the device off at startup
+            state_data[device_model] = None
+            # state_data[device_model] = device.last_sent_command(
+            #     const.TELLSTICK_TURNON
+            #     | const.TELLSTICK_TURNOFF
+            #     | const.TELLSTICK_DIM)
 
             device_data['type'] = device_model
             device_data['device'] = device
