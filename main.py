@@ -201,9 +201,14 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
     sensor_topics = s.create_topics(s.get(id_))
     initial_publish(mqtt_sensor, sensor_topics)
 
+    if data_type is const.TELLSTICK_TEMPERATURE:
+        logging.info('=====This is a temp sensor and the temp is: {0}'.format(value))
+        if value > 10:
+            logging.info('Temperature is above 10 degrees, must be an error, skipping data.')
+
+
     topic = s.create_topic(id_, type_string)
     data = s.create_topic_data(type_string, value)
-    logging.info('=====Value of sensor: {0}, data type: {1}'.format(value, data_type))
     publish_mqtt(mqtt_sensor, topic, data)
 
 
