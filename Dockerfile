@@ -35,8 +35,8 @@ WORKDIR /usr/src/telldus-core-mqtt
 
 COPY requirements.txt ./
 
-RUN python -m pip install --upgrade pip \
-    && pip3 install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 RUN ln -s /usr/local/bin/tellcore_events /usr/bin/tdevents \
