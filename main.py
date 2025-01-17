@@ -203,8 +203,8 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
 
     if data_type is const.TELLSTICK_TEMPERATURE:
         logging.info('=====This is a temp sensor and the temp is: {0}'.format(value))
-        logging.info('Type of value is: {0}'.format(type(value)))
-        if int(value) > 10:
+        logging.info('Type of value is: {0}'.format(type(float(value))))
+        if float(value) > 10:
             logging.info('Temperature is above 10 degrees, must be an error, skipping data.')
 
 
