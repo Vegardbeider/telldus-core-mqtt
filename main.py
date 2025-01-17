@@ -103,7 +103,6 @@ def subscribe_device(client: mqtt_client):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNON)
                 publish_mqtt(mqtt_device, topic, topic_data, False)
-                logging.info('=======This is publish_mqtt call number 1')
 
                 logging.debug('[DEVICE] Sending command ON to device '
                               'id %s', device_id)
@@ -113,7 +112,6 @@ def subscribe_device(client: mqtt_client):
                 topic = d.create_topic(device_id, 'switch')
                 topic_data = d.create_topic_data('switch', const.TELLSTICK_TURNOFF)
                 publish_mqtt(mqtt_device, topic, topic_data, False)
-                logging.info('=======This is publish_mqtt call number 2')
 
                 logging.debug('[DEVICE] Sending command OFF to device '
                               'id %s', device_id)
@@ -186,7 +184,6 @@ def device_event(id_, method, data, cid):
         topic = d.create_topic(id_, 'switch')
         topic_data = d.create_topic_data('switch', method)
     publish_mqtt(mqtt_device, topic, topic_data, False)
-    logging.info('=======This is publish_mqtt call number 4')
 
 
 def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
@@ -200,10 +197,8 @@ def sensor_event(protocol, model, id_, data_type, value, timestamp, cid):
     # Sensor is not capable of reading values above 50 degrees
     # must be an error
     if data_type is const.TELLSTICK_TEMPERATURE:
-        logging.info('=====This is a temp sensor and the temp is: {0}'.format(value))
-        logging.info('Type of value is: {0}'.format(type(float(value))))
         if float(value) > 10:
-            logging.info('Temperature is above 50 degrees, must be an error, skipping data.')
+            logging.warning('Temperature is above 50 degrees, must be an error, skipping data.')
             return
         
     # Sensors can be added or discovered in telldus-core without
