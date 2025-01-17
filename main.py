@@ -220,7 +220,6 @@ def initial_publish(client_mqtt, topics, retain=True):
         if 'state' in topic:
             publish_mqtt(client_mqtt, topic['state']['topic'],
                          topic['state']['data'], retain)
-            logging.info('=======This is publish_mqtt call number 7')
         if 'button' in topic:
             publish_mqtt(client_mqtt, topic['button']['topic_on'],
                          topic['button']['data_on'], False)
