@@ -324,7 +324,7 @@ class Device(Telldus):
             state_data = {}
 
             # Change the behavior to avoid switching the device off at startup
-            state_data[device_model] = None
+            state_data[device_model] = const.TELLSTICK_ERROR_UNKNOWN
             # state_data[device_model] = device.last_sent_command(
             #     const.TELLSTICK_TURNON
             #     | const.TELLSTICK_TURNOFF
